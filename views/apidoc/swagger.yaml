@@ -1,0 +1,192 @@
+openapi: 3.0.3
+info:
+  title: Swagger Mediatheque
+  description: Documentation des API du projet Mediatheque
+  version: 1.0.11
+
+servers:
+  - url: http://localhost:9000
+    description: Serveur local
+tags:
+  - name: ressources
+    description: API de gestion des ressources de la mediatheque (livres, CD, DVD, etc.)
+  - name: categories
+    description: API de gestion des categories de ressources de la mediatheque
+  - name: lecteurs
+    description: API de gestion des lecteurs de la mediatheque
+  - name: emprunts
+    description: API de gestion des emprunts de la mediatheque
+paths:
+  /api/le-top:
+    get:
+      tags:
+        - ressources
+      summary: Retourne les 10 ressources les plus empruntées
+      description: Retourne les 10 ressources les plus empruntées
+      operationId: getTop10
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/le-top'
+  /api/categories:
+    get:
+      tags:
+        - categories
+      summary: Retourne la liste des categories
+      description: Retourne la liste des categories
+      operationId: getCategories
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/categorie'
+  /api/lecteurs:
+    get:
+      tags:
+        - lecteurs
+      summary: Retourne la liste des lecteurs
+      description: Retourne la liste des lecteurs
+      operationId: getLecteurs
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/lecteur'
+  /api/catalogue/random/{limite}:
+    get:
+      tags:
+        - ressources
+      summary: Retourne une liste de ressources au hasard
+      description: Retourne une liste de ressources au hasard
+      operationId: getRandom
+      parameters:
+        - name: limite
+          in: path
+          description: Nombre de ressources à retourner
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ressource'
+  /api/catalogue/{type}:
+    get:
+      tags:
+        - ressources
+      summary: Retourne la liste des ressources d'un type donné
+      description: Retourne la liste des ressources d'un type donné
+      operationId: getRessourcesByType
+      parameters:
+        - name: type
+          in: path
+          description: Type de ressource
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ressource'
+components:
+  schemas:
+    categorie:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        libellecategorie:
+          type: string
+    lecteur:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        nomemprunteur:
+          type: string
+        prenomemprunteur:
+          type: string
+        datenassance:
+          type: string
+        emailemprunteur:
+          type: string
+        telportable:
+          type: string
+        validationcompte:
+          type: integer
+          format: int32
+          description: |-
+            La validation du compte est un int qui prend plusieurs valeurs :
+            0 : Compte non validé
+            1 : email validé
+            2 : Compte validé par un admin
+            3 : Compte banni
+            4 : Compte supprimé
+    le-top:
+      type: object
+      properties:
+        idressource:
+          type: integer
+          format: int32
+          description: "ID de la ressource"
+        titre:
+          type: string
+          description: "Titre de la ressources"
+        nbEmprunt:
+          type: integer
+          format: int32
+          description: "Nombre d'emprunts de la ressource"
+    ressource:
+      type: object
+      properties:
+        idressource:
+          type: integer
+          format: int32
+          description: "ID de la ressource"
+        idcategorie:
+          type: integer
+          format: int32
+          description: "ID de la categorie de la ressource"
+        titre:
+          type: string
+          description: "Titre de la ressource"
+        description:
+          type: string
+          description: "Description de la ressource"
+        image:
+          type: string
+          description: "Nom de l'image présente sur le serveur (/assets/)"
+        anneesortie:
+          type: string
+        isbn:
+          type: string
+          description: "Code ISBN"
+        langue:
+          type: string
+          description: "Code de la langue (fr, en, es, etc.)"

@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  front:
+    build: .
+    container_name: front
+    environment:
+      - MVC_SERVER=192.168.125.2
+      - MVC_DB=bd_MediaTP
+      - MVC_USER=gilbert
+      - MVC_TOKEN=Montagné
+      - MVC_DEBUG=false
+      - MVC_URL_VALIDATION=http://frontap3.dombtsig.local/valider-compte/
+      - MVC_MAIL_SERVER=mailap3.dombtsig.local
+      - MVC_FROM_EMAIL=contact@mailap3.dombtsig.local
+    command: php -S 0.0.0.0:9000
+    volumes:
+      - .:/var/www/html/
+    restart: unless-stopped
+    # Le port 9000 n'est pas exposé car il est derrrière un reverse proxy (nginx)
+    ports:
+     - "9000:9000"
